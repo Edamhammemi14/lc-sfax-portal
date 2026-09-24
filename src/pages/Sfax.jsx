@@ -5,14 +5,11 @@ import SfaxStory from '../components/SfaxStory';
 const Sfax = () => {
   const { t } = useTranslation();
   const videos = [
-    "Did you know those things about Tunisia_🇹🇳 #tunisia #wth24 #wthkiwicom #cheapflights.mp4",
-    "Habibi, Visit Tunisia,North africa _ beauty,heaven on earth,magical place,just wow.mp4",
-    "Let_s Discover Tunisia  🇹🇳.mp4",
-    "Solo Traveling to Tunisia.mp4",
-    "TUNISIA IS NOT SAFE #shorts.mp4",
-    "This is Everything $6 Gets You in Tunisia.mp4",
-    "This is TUNISIA 🇹🇳 #tunisia #tunisie #تونس #travel #mediterranean #sea.mp4",
-    "Tunisia travel tips_ 5 MUST-KNOW tips #travel #travelblogger #traveldiaries.mp4"
+    { src: "/videos/discover-tunisia.mp4", title: "Discover Tunisia" },
+    { src: "/videos/safety-review.mp4", title: "Safety Review & Experience" },
+    { src: "/videos/sfax-promo.mp4", title: "Sfax City & Culture Promo" },
+    { src: "/videos/solo-travel.mp4", title: "Solo Traveling to Tunisia" },
+    { src: "/videos/visit-tunisia.mp4", title: "Visit Tunisia & Mediterranean Sea" }
   ];
 
   return (
@@ -39,7 +36,7 @@ const Sfax = () => {
                 <div className="video-inner">
                   <div className="video-loader"></div>
                   <video 
-                    src={`/tunisia-videos/${video}`} 
+                    src={video.src} 
                     controls 
                     loading="lazy"
                     className="gallery-vid"
@@ -53,7 +50,7 @@ const Sfax = () => {
                     <span className="vid-tag">ARCHIVE {(index + 1).toString().padStart(2, '0')}</span>
                     <span className="vid-duration">00:00:{(((index * 7 + 13) % 40) + 15).toString().padStart(2, '0')}</span>
                   </div>
-                  <h4>{video.replace('.mp4', '').replace(/_/g, ' ').substring(0, 40)}...</h4>
+                  <h4>{video.title}</h4>
                   <div className="artistic-barcode"></div>
                 </div>
               </div>
