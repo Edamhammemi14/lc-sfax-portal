@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SkeletonLoader from '../components/SkeletonLoader';
+import { fallbackOpportunities } from '../data/fallbackOpportunities';
 
 const Opportunities = () => {
   const { t } = useTranslation();
@@ -43,17 +44,17 @@ const Opportunities = () => {
   ];
 
   // Dynamic Data State
-  const [oppsData, setOppsData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [oppsData, setOppsData] = useState(fallbackOpportunities);
+  const [loading] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
   const [accommFilter, setAccommFilter] = useState('All');
 
   useEffect(() => {
-    const fetchOpportunities = async (retries = 3) => {
+    const fetchOpportunities = async () => {
       try {
-        setLoading(true);
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:3001';
+        const baseUrl = import.meta.env.VITE_API_URL;
+        if (!baseUrl) return;
+
         const [gv, gt, gte] = await Promise.all([
           fetch(`${baseUrl}/api/igv`).then(res => res.json()),
           fetch(`${baseUrl}/api/igta`).then(res => res.json()),
@@ -71,18 +72,11 @@ const Opportunities = () => {
           ...formatData(gte, 'GTe', 'linear-gradient(135deg, rgba(244,137,36,0.12), rgba(244,137,36,0.05))')
         ];
 
-        setOppsData(allOpps);
-        setLoading(false);
-        setError(null); // Clear error on success
-      } catch (err) {
-        if (retries > 0) {
-          console.warn(`Fetch failed, retrying in 2s... (${retries} retries left)`);
-          setTimeout(() => fetchOpportunities(retries - 1), 2000);
-        } else {
-          console.error("Failed to load opportunities after retries", err);
-          setError(err.message);
-          setLoading(false);
+        if (allOpps.length > 0) {
+          setOppsData(allOpps);
         }
+      } catch (err) {
+        console.warn("Using fallback opportunities:", err);
       }
     };
 
@@ -212,13 +206,6 @@ const Opportunities = () => {
               {t('opp_results_found')} <strong>{filteredOpps.length}</strong> {t('opp_results_count')}
             </div>
           </div>
-
-          {/* Error State */}
-          {error && (
-            <div className="error-banner">
-              <p>{t('opp_error_data')} ({error})</p>
-            </div>
-          )}
 
           {/* Data Grid */}
           <div className="live-grid">
