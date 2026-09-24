@@ -221,7 +221,8 @@ const Opportunities = () => {
               filteredOpps.map((opp, idx) => {
                 const programMap = { 'GV': 'global-volunteer', 'GT': 'global-talent', 'GTe': 'global-teacher' };
                 const programPath = programMap[opp.tag] || 'global-volunteer';
-                const oppUrl = `https://aiesec.org/opportunity/${programPath}/${opp.id}`;
+                const progId = opp.tag === 'GT' ? 8 : opp.tag === 'GTe' ? 9 : 7;
+                const oppUrl = opp.url || (opp.id && !isNaN(opp.id) ? `https://aiesec.org/opportunity/${programPath}/${opp.id}` : `https://aiesec.org/search?programmes=${progId}&locations=1619`);
 
                 return (
                   <div
