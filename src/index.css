@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+:root {
+  /* Three Signature Brand Colors (GV Red, GT Cyan, GTe Orange) */
+  --gv-red: #F85A40;
+  --gv-red-hover: #E13B22;
+  --gv-red-soft: rgba(248, 90, 64, 0.12);
+
+  --gt-cyan: #0CB9C1;
+  --gt-cyan-hover: #009AA2;
+  --gt-cyan-soft: rgba(12, 185, 193, 0.12);
+
+  --gte-orange: #F48924;
+  --gte-orange-hover: #D96F0E;
+  --gte-orange-soft: rgba(244, 137, 36, 0.12);
+
+  /* Core UI Tokens mapped to the 3 colors */
+  --primary: var(--gt-cyan);
+  --primary-light: #38D4DC;
+  --primary-dark: #008B94;
+
+  --accent: var(--gv-red);
+  --accent-hover: var(--gv-red-hover);
+  --accent-orange: var(--gte-orange);
+
+  --secondary: #0B1924;
+  --secondary-light: #162E3D;
+
+  --bg: #F7FAFC;
+  --text: #0F2027;
+  --text-light: #4B6373;
+  --white: #FFFFFF;
+
+  /* HSL Helpers */
+  --p-h: 183; --p-s: 88%; --p-l: 40%;
+  --s-h: 205; --s-s: 55%; --s-l: 9%;
+  --a-h: 8; --a-s: 92%; --a-l: 61%;
+  --o-h: 29; --o-s: 91%; --o-l: 55%;
+
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.6);
+
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  --shadow-sm: 0 4px 10px rgba(11, 25, 36, 0.04);
+  --shadow-md: 0 10px 25px rgba(11, 25, 36, 0.08);
+  --shadow-lg: 0 25px 50px -12px rgba(11, 25, 36, 0.15);
+
+  --tri-gradient: linear-gradient(135deg, var(--gv-red) 0%, var(--gte-orange) 50%, var(--gt-cyan) 100%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(12, 185, 193, 0.25);
+  color: var(--secondary);
+}
+
+[dir="rtl"] body {
+  text-align: right;
+}
+
+[dir="rtl"] .logo-text {
+  align-items: flex-start;
+}
+
+[dir="rtl"] .nav-links {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .lang-menu {
+  right: auto;
+  left: 0;
+}
+
+[dir="rtl"] .btn {
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .lang-item {
+  text-align: right;
+}
+
+/* Noise Overlay for Texture */
+body::before, .artistic-grain {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.sfax-theme {
+  background: var(--bg);
+  background: radial-gradient(at 0% 0%, rgba(12, 185, 193, 0.12) 0, transparent 50%),
+              radial-gradient(at 100% 0%, rgba(248, 90, 64, 0.12) 0, transparent 50%),
+              radial-gradient(at 100% 100%, rgba(244, 137, 36, 0.12) 0, transparent 50%),
+              radial-gradient(at 0% 100%, rgba(12, 185, 193, 0.08) 0, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* High-End Scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--gv-red), var(--gte-orange), var(--gt-cyan));
+  border-radius: 10px;
+  border: 2px solid var(--bg);
+}
+
+/* Global Grid System */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-padding {
+  padding: 10rem 0;
+}
+
+.bg-alt {
+  background-color: var(--white);
+}
+
+/* Typography Overhaul */
+.title-main {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--secondary);
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-light);
+  max-width: 650px;
+  margin-top: 1.5rem;
+}
+
+.tagline {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gt-cyan);
+  background: rgba(12, 185, 193, 0.1);
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  margin-bottom: 1.2rem;
+  border: 1px solid rgba(12, 185, 193, 0.2);
+}
+
+.highlight {
+  background: linear-gradient(120deg, var(--gv-red) 0%, var(--gte-orange) 50%, var(--gt-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Button Elevation */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.1rem 2.6rem;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--gt-cyan) 0%, #009AA2 100%);
+  color: var(--white);
+  box-shadow: 0 12px 30px rgba(12, 185, 193, 0.28);
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: linear-gradient(135deg, var(--gv-red) 0%, var(--gte-orange) 100%);
+  box-shadow: 0 18px 38px rgba(248, 90, 64, 0.35);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--gv-red) 0%, var(--gte-orange) 100%);
+  color: var(--white);
+  box-shadow: 0 12px 30px rgba(248, 90, 64, 0.28);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: linear-gradient(135deg, var(--gt-cyan) 0%, #009AA2 100%);
+  box-shadow: 0 18px 38px rgba(12, 185, 193, 0.35);
+}
+
+.btn-secondary-white {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary-white:hover {
+  background: var(--white);
+  color: var(--secondary);
+}
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .title-main { font-size: 2.5rem; }
+  .container { padding: 0 1.5rem; }
+  .section-padding { padding: 6rem 0; }
+  .btn { padding: 1rem 2rem; font-size: 0.9rem; width: 100%; text-align: center; justify-content: center; }
+}
