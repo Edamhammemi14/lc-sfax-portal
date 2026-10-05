@@ -273,15 +273,7 @@ const Opportunities = () => {
                         <i className="bx bx-bed"></i> {t('opp_logistics_accomm')}: {opp.accommodation}
                       </span>
                     )}
-                      <span className="log-pill" style={{
-                        backgroundColor: 'rgba(0,0,0,0.04)',
-                        color: 'var(--text)',
-                        fontWeight: '600',
-                        border: '1px solid rgba(0,0,0,0.1)'
-                      }}>
-                        <i className="bx bx-restaurant"></i> {t('opp_logistics_meals')}: {opp.meals ? 'Provided' : 'None'}
-                      </span>
-                    </div>
+                  </div>
 
                     {/* Action */}
                     <div className="live-action">
