@@ -59,6 +59,17 @@ function getMeals(logistics) {
   return !!(logistics.food_covered || logistics.food_provided);
 }
 
+async function fetchDescription(id) {
+  try {
+    const query = `query { getOpportunity(id: ${id}) { description project_description } }`;
+    const res = await axios.post(API_URL, { query }, { headers: { Authorization: TOKEN } });
+    const data = res.data?.data?.getOpportunity;
+    return data?.description || data?.project_description || 'No description provided.';
+  } catch (e) {
+    return 'No description provided.';
+  }
+}
+
 async function fetchProgram(progId, tag, gradient, progPath) {
   const allData = [];
   try {
@@ -73,10 +84,12 @@ async function fetchProgram(progId, tag, gradient, progPath) {
       if (result?.data) allData.push(...result.data);
     }
   } catch (err) {
-    console.error(`Error fetching prog ${progId}:`, err.message);
+    console.error(`Error fetching prog ${progId}:`, err.response ? err.response.data : err.message);
   }
 
-  return allData.map(opp => {
+  // Fetch descriptions individually because allOpportunity cannot query description
+  const mapped = [];
+  for (const opp of allData) {
     const logistics = opp.logistics_info || {};
     const skills = (opp.skills || []).map(s => s?.constant_name).filter(Boolean);
     const backgrounds = (opp.backgrounds || []).map(b => b?.constant_name).filter(Boolean);
@@ -85,10 +98,13 @@ async function fetchProgram(progId, tag, gradient, progPath) {
     const rawSlots = opp.slots || [];
     const totalOpenings = rawSlots.reduce((acc, s) => acc + (Number(s.available_openings) || 0), 0) || 2;
     const earliestSlot = rawSlots[0];
+    
+    const desc = await fetchDescription(opp.id);
 
-    return {
+    mapped.push({
       id: String(opp.id),
       title: opp.title || 'Untitled Opportunity',
+      description: desc,
       provider: opp.organisation?.name || opp.host_lc?.name || 'AIESEC in Sfax',
       skills: joinList(skills) || (tag === 'GT' ? 'Software & Business' : tag === 'GTe' ? 'Language Teaching' : 'Community Leadership'),
       backgrounds: joinList(backgrounds) || (tag === 'GT' ? 'Engineering / Business' : tag === 'GTe' ? 'Education' : 'Youth Leadership'),
@@ -108,8 +124,9 @@ async function fetchProgram(progId, tag, gradient, progPath) {
       tag,
       gradient,
       url: `https://aiesec.org/opportunity/${progPath}/${opp.id}`
-    };
-  });
+    });
+  }
+  return mapped;
 }
 
 async function run() {
@@ -123,9 +140,13 @@ async function run() {
   const all = [...gvList, ...gtList, ...gteList];
   console.log(`Synced successfully: GV (${gvList.length}), GT (${gtList.length}), GTe (${gteList.length}). Total = ${all.length}`);
 
-  const content = 'export const fallbackOpportunities = ' + JSON.stringify(all, null, 2) + ';\n';
-  fs.writeFileSync('src/data/fallbackOpportunities.js', content, 'utf-8');
-  console.log('Updated src/data/fallbackOpportunities.js with ALL opportunities!');
+  if (all.length > 0) {
+    const content = 'export const fallbackOpportunities = ' + JSON.stringify(all, null, 2) + ';\n';
+    fs.writeFileSync('src/data/fallbackOpportunities.js', content, 'utf-8');
+    console.log('Updated src/data/fallbackOpportunities.js with ALL opportunities!');
+  } else {
+    console.log('No opportunities fetched, skipping file update to prevent erasing existing data.');
+  }
 }
 
 run().catch(console.error);

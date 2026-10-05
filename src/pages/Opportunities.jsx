@@ -48,6 +48,7 @@ const Opportunities = () => {
   const [loading] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
   const [accommFilter, setAccommFilter] = useState('All');
+  const [selectedOpp, setSelectedOpp] = useState(null);
 
   useEffect(() => {
     const fetchOpportunities = async () => {
@@ -234,7 +235,7 @@ const Opportunities = () => {
                       boxShadow: 'var(--shadow-md)',
                       cursor: 'pointer'
                     }}
-                    onClick={() => window.open(oppUrl, '_blank')}
+                    onClick={() => setSelectedOpp({...opp, oppUrl})}
                   >
                     <div className="live-card-head">
                       <span className={`live-badge badge-${opp.tag.toLowerCase()}`}>{opp.tag}</span>
@@ -305,6 +306,59 @@ const Opportunities = () => {
           </div>
         </div>
       </section>
+
+      {/* Description Modal */}
+      {selectedOpp && (
+        <div className="opp-modal-overlay" onClick={() => setSelectedOpp(null)}>
+          <div className="opp-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="opp-modal-close" onClick={() => setSelectedOpp(null)}>
+              <i className="bx bx-x"></i>
+            </button>
+            <div className="opp-modal-header">
+              <span className={`live-badge badge-${selectedOpp.tag.toLowerCase()}`}>{selectedOpp.tag}</span>
+              <h2>{selectedOpp.title}</h2>
+              <p className="opp-modal-provider">
+                <i className="bx bx-building"></i> {selectedOpp.provider}
+              </p>
+            </div>
+            
+            <div className="opp-modal-body">
+              <h3>Description</h3>
+              <div className="opp-modal-desc-text" dangerouslySetInnerHTML={{ __html: selectedOpp.description || 'No description available for this project.' }} />
+              
+              <div className="opp-modal-meta">
+                <div className="opp-modal-meta-item">
+                  <i className="bx bx-calendar"></i> <strong>Start:</strong> {selectedOpp.start_date || 'TBD'}
+                </div>
+                <div className="opp-modal-meta-item">
+                  <i className="bx bx-calendar-check"></i> <strong>End:</strong> {selectedOpp.end_date || 'TBD'}
+                </div>
+                {selectedOpp.tag !== 'GT' && selectedOpp.tag !== 'GTe' && (
+                  <div className="opp-modal-meta-item">
+                    <i className="bx bx-bed"></i> <strong>Accommodation:</strong> {selectedOpp.accommodation}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="opp-modal-footer">
+              <a
+                href={selectedOpp.oppUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="action-btn"
+                style={{
+                  backgroundColor: 'var(--primary)',
+                  color: 'white',
+                  fontWeight: '700'
+                }}
+              >
+                Apply on AIESEC.org
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -715,6 +769,117 @@ const Opportunities = () => {
            min-height: 400px;
            border-radius: 20px;
         }
+
+        /* Modal Styles */
+        .opp-modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.6);
+          backdrop-filter: blur(5px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 2rem;
+          animation: fadeIn 0.3s ease;
+        }
+        .opp-modal-content {
+          background: white;
+          width: 100%;
+          max-width: 700px;
+          border-radius: 20px;
+          overflow: hidden;
+          position: relative;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          display: flex;
+          flex-direction: column;
+          max-height: 90vh;
+          animation: slideUp 0.3s ease;
+        }
+        .opp-modal-close {
+          position: absolute;
+          top: 1.5rem; right: 1.5rem;
+          background: rgba(0,0,0,0.05);
+          border: none;
+          width: 36px; height: 36px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.5rem;
+          cursor: pointer;
+          color: var(--text);
+          transition: all 0.2s;
+        }
+        .opp-modal-close:hover {
+          background: rgba(0,0,0,0.1);
+          color: #E8534A;
+        }
+        .opp-modal-header {
+          padding: 2.5rem 2.5rem 1.5rem;
+          background: var(--bg-light);
+          border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .opp-modal-header h2 {
+          font-size: 1.8rem;
+          color: var(--secondary);
+          margin: 1rem 0 0.5rem;
+          line-height: 1.3;
+        }
+        .opp-modal-provider {
+          color: var(--text-light);
+          font-weight: 500;
+          font-size: 1rem;
+        }
+        .opp-modal-body {
+          padding: 2rem 2.5rem;
+          overflow-y: auto;
+          flex: 1;
+        }
+        .opp-modal-body h3 {
+          font-size: 1.2rem;
+          color: var(--secondary);
+          margin-bottom: 1rem;
+        }
+        .opp-modal-desc-text {
+          color: var(--text);
+          line-height: 1.7;
+          margin-bottom: 2rem;
+          font-size: 1rem;
+          white-space: pre-wrap;
+        }
+        .opp-modal-desc-text p {
+          margin-bottom: 1rem;
+        }
+        .opp-modal-desc-text ul {
+          margin-left: 1.5rem;
+          margin-bottom: 1rem;
+        }
+        .opp-modal-meta {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          background: var(--bg-light);
+          padding: 1.5rem;
+          border-radius: 12px;
+          border: 1px solid rgba(0,0,0,0.05);
+        }
+        .opp-modal-meta-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--text);
+          font-size: 0.9rem;
+        }
+        .opp-modal-meta-item i {
+          color: var(--primary);
+          font-size: 1.2rem;
+        }
+        .opp-modal-footer {
+          padding: 1.5rem 2.5rem;
+          border-top: 1px solid rgba(0,0,0,0.05);
+          background: white;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
       `}} />
     </main>
   );
