@@ -239,7 +239,6 @@ const Opportunities = () => {
                   >
                     <div className="live-card-head">
                       <span className={`live-badge badge-${opp.tag.toLowerCase()}`}>{opp.tag}</span>
-                      <span className="live-badge badge-sdg" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--text-light)' }}>{opp.sdgs.split(',')[0] || 'SDG 17'}</span>
                     </div>
 
                     <h3 className="live-title" style={{
